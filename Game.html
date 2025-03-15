@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Start to Scrap</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .game-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .dropzone {
+            border: 2px dashed #555;
+            padding: 20px;
+            min-height: 100px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .draggable {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            cursor: grab;
+            display: inline-block;
+        }
+        #score, #timer {
+            font-size: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>From Start to Scrap: Life Cycle Challenge</h1>
+    <p>Drag the components to their correct life cycle stage!</p>
+    <p id="timer">Time Left: 60s</p>
+    <p id="score">Score: 0</p>
+
+    <div class="game-container">
+        <div class="dropzone" id="raw-materials">Raw Materials</div>
+        <div class="dropzone" id="production">Production</div>
+        <div class="dropzone" id="usage">Usage</div>
+        <div class="dropzone" id="end-life">End-of-Life</div>
+    </div>
+
+    <div class="draggable" draggable="true" id="aluminum" data-category="raw-materials">Aluminum (Bauxite Ore) - Smartphone</div>
+    <div class="draggable" draggable="true" id="energy" data-category="production">Energy for Manufacturing - Smartphone</div>
+    <div class="draggable" draggable="true" id="charging" data-category="usage">Electricity for Charging - Smartphone</div>
+    <div class="draggable" draggable="true" id="ewaste" data-category="end-life">E-waste Disposal - Smartphone</div>
+    
+    <div class="draggable" draggable="true" id="cotton" data-category="raw-materials">Cotton (Farm) - T-Shirt</div>
+    <div class="draggable" draggable="true" id="textile" data-category="production">Textile Processing Energy - T-Shirt</div>
+    <div class="draggable" draggable="true" id="washing" data-category="usage">Water for Washing - T-Shirt</div>
+    <div class="draggable" draggable="true" id="discard" data-category="end-life">Landfill/Waste Collection - T-Shirt</div>
+    
+    <div class="draggable" draggable="true" id="plastic" data-category="raw-materials">Crude Oil (Raw Material) - Plastic Bottle</div>
+    <div class="draggable" draggable="true" id="bottle-prod" data-category="production">Plastic Molding Process - Plastic Bottle</div>
+    <div class="draggable" draggable="true" id="bottle-use" data-category="usage">Used for Drinking - Plastic Bottle</div>
+    <div class="draggable" draggable="true" id="recycle" data-category="end-life">Recycling or Ocean Pollution - Plastic Bottle</div>
+    
+    <div class="draggable" draggable="true" id="wood" data-category="raw-materials">Wood (Tree) - Paper</div>
+    <div class="draggable" draggable="true" id="pulp" data-category="production">Pulp Processing - Paper</div>
+    <div class="draggable" draggable="true" id="writing" data-category="usage">Writing/Printing - Paper</div>
+    <div class="draggable" draggable="true" id="paper-recycle" data-category="end-life">Recycling or Landfill - Paper</div>
+
+    <script>
+        let score = 0;
+        let timeLeft = 60;
+        const scoreDisplay = document.getElementById("score");
+        const timerDisplay = document.getElementById("timer");
+        
+        function updateTimer() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+                setTimeout(updateTimer, 1000);
+            } else {
+                alert(`Time's up! Final Score: ${score}`);
+            }
+        }
+        setTimeout(updateTimer, 1000);
+
+        const draggables = document.querySelectorAll('.draggable');
+        const dropzones = document.querySelectorAll('.dropzone');
+
+        draggables.forEach(item => {
+            item.addEventListener('dragstart', event => {
+                event.dataTransfer.setData('text', event.target.id);
+            });
+        });
+
+        dropzones.forEach(zone => {
+            zone.addEventListener('dragover', event => {
+                event.preventDefault();
+            });
+            zone.addEventListener('drop', event => {
+                event.preventDefault();
+                const id = event.dataTransfer.getData('text');
+                const draggedElement = document.getElementById(id);
+                const correctCategory = draggedElement.dataset.category;
+                
+                if (event.target.id === correctCategory) {
+                    event.target.appendChild(draggedElement);
+                    score += 10;
+                    scoreDisplay.textContent = `Score: ${score}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
